@@ -1,58 +1,54 @@
 # Diet & Habit Coach
 
-A minimalistic Diet & Habit Coach web app built with **Laravel 12**, **Inertia.js**, **Vue 3**, and **Tailwind CSS**.
+A minimalistic, multi-user Diet & Habit Coach web app.
 
-## Stack
+**Stack:** Laravel 12 · Inertia.js · Vue 3 · Tailwind CSS · MySQL · Claude AI · PWA
 
-- **Backend:** Laravel 12
-- **Frontend:** Inertia.js + Vue 3 + Vite
-- **Styling:** Tailwind CSS
-- **Database:** MySQL
-- **Auth:** Laravel Breeze (Inertia/Vue preset) — single user, no registration
+## Features
+- Log meals with AI calorie estimation (Claude Haiku) or food database search (Open Food Facts — 2M+ products)
+- Daily habit tracking with streaks
+- 30-day progress charts
+- Weekly AI coaching insights (Claude Sonnet)
+- Installable as a mobile PWA
+- Auto-deploy via GitHub Actions (ready to wire when server exists)
 
 ## Setup
 
 ```bash
-# 1. Install Laravel
+# 1. Create Laravel project
 composer create-project laravel/laravel diet-habit-coach
 cd diet-habit-coach
 
-# 2. Install Breeze (Inertia + Vue)
+# 2. Install Breeze
 composer require laravel/breeze --dev
 php artisan breeze:install vue
 
-# 3. Copy env and configure
+# 3. Copy custom files from this repo
+git clone https://github.com/edgarminasyan/diet-habit-coach.git /tmp/dhc
+cp -r /tmp/dhc/app /tmp/dhc/routes /tmp/dhc/database /tmp/dhc/resources . 
+cp /tmp/dhc/vite.config.js /tmp/dhc/tailwind.config.js /tmp/dhc/.env.example .
+
+# 4. Install extra packages
+composer require anthropic-php/client
+npm install vite-plugin-pwa @tailwindcss/forms
+
+# 5. Configure
 cp .env.example .env
 php artisan key:generate
+# Edit .env — set DB_DATABASE, DB_USERNAME, DB_PASSWORD, ANTHROPIC_API_KEY
 
-# 4. Create MySQL database and update .env with your credentials
-
-# 5. Run migrations and seed the single user
+# 6. Migrate and seed
 php artisan migrate --seed
 
-# 6. Start dev servers
-npm install && npm run dev
+# 7. Start
+npm run dev
 php artisan serve
 ```
 
-## Default Login
+## Login
+| Field | Value |
+|---|---|
+| Email | `admin@dietcoach.com` |
+| Password | `password` |
 
-| Field    | Value                 |
-|----------|-----------------------|
-| Email    | `admin@dietcoach.com` |
-| Password | `password`            |
-
-> Change credentials via the Profile page after first login.
-
-## Custom Files (override Breeze defaults)
-
-After running `breeze:install vue`, copy these files from this repo over the generated ones:
-
-- `routes/web.php` — redirects `/` to login, no registration
-- `routes/auth.php` — login/logout only
-- `resources/js/Layouts/AppLayout.vue` — minimal nav layout
-- `resources/js/Pages/Auth/Login.vue` — clean login page
-- `resources/js/Pages/Dashboard.vue` — overview dashboard
-- `resources/js/Pages/Profile/Edit.vue` — profile & password update
-- `database/seeders/DatabaseSeeder.php`
-- `database/seeders/UserSeeder.php`
+See `CLAUDE.md` for full architecture, conventions, and deployment instructions.
